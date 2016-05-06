@@ -7,6 +7,8 @@
       Berliner Schule
     * Refactored by manticore to run with TeenySynth sound engine (fork of
       the_synth by DZL and Illuminat modified to support attiny85/84 + other stuff)
+    * New Feature added by manticore:
+      - Simple menu to change wave, sequencer, and timing
 
 */
 
