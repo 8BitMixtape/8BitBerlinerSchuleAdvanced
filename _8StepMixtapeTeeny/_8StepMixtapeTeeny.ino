@@ -114,7 +114,7 @@ void potToLED(int _pot_value, uint8_t beat_step_index)
         }
 
 
-    for (int i = ( scaled + 1 ); i < NUMBER_OF_STEPS; i++)
+    for (int i = ( scaled ); i < NUMBER_OF_STEPS; i++)
         {
             digitalWrite(ledPinMapping[i], LOW);
         }
