@@ -223,14 +223,12 @@ void selectWave()
 
     while(!update_pot_value())
     {
-        //potToLED(pot_value, beat_step_index);
+        potToLED(pot_value, beat_step_index);
 
         uint8_t wave_index = pot_value >> POT_SCALE_TO_8;
 
         //play current beat for preview (ervery 500 ms)
         current_millis = synth.millis();
-
-
 
         if (current_millis - last_beat_millis >= beat_tempo )
             {
