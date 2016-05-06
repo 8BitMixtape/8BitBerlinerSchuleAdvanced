@@ -1,3 +1,15 @@
+/*
+    Attiny85/84 Based Sequencer
+    original code by Adam Berger
+    http://www.instructables.com/id/Attiny-Pocket-Sequencer/
+
+    * Modified by dusjagr and stahl to run on the attiny84 for the 8Step MixTape
+      Berliner Schule
+    * Refactored by manticore to run with TeenySynth sound engine (fork of
+      the_synth by DZL and Illuminat modified to support attiny85/84 + other stuff)
+
+*/
+
 #include <TeenySynth.h>
 #include <util/delay.h>
 
