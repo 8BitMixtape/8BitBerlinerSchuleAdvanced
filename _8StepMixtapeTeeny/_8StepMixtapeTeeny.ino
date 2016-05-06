@@ -251,7 +251,7 @@ void selectWave()
                 soundTrigger(layer_index, stepLayer[layer_index][beat_step_index], offsetLayer[layer_index]);
                 last_beat_millis = synth.millis(); // cant use millis from arduino - iox
                 beat_step_index++;
-                if (beat_step_index > NUMBER_OF_STEPS) beat_step_index = 0;
+                if (beat_step_index > (NUMBER_OF_STEPS -1)) beat_step_index = 0;
             }
 
     }
