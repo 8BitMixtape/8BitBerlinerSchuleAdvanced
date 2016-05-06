@@ -8,6 +8,8 @@
     * Refactored by manticore to run with TeenySynth sound engine (fork of
       the_synth by DZL and Illuminat modified to support attiny85/84 + other stuff)
     * New Feature added by manticore:
+      - options to add sound intro, enable disable layer, setstep on start, select mode on start
+      - changed variable to constant to save space
       - Simple menu to change wave, sequencer, and timing
 
 */
