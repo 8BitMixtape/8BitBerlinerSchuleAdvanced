@@ -63,7 +63,7 @@ int stepLayer[4][NUMBER_OF_STEPS] =
     {0, 0, 0, 0, 0, 0, 0, 0}
 };
 
-uint8_t offsetLayer[3] = {50,30,0};
+uint8_t offsetLayer[4] = {50,30,0,0};
 
 struct timerInterval
 {
