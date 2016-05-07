@@ -394,7 +394,9 @@ static inline void selectMode()
 
             if (onInterval(&timer_sequencer_play, beat_tempo))
             {
-                playSequencer();
+                playSequencer();               
+                beat_step_num++;
+                if (beat_step_num>(NUMBER_OF_STEPS-1)) beat_step_num = 0;
             }
         }
 
