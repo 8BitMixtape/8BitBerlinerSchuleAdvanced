@@ -205,8 +205,9 @@ void setStepVariable(uint8_t voice, int * stepVarArray)
 
 void setStepVarIndividual(uint8_t beat_step_index, int* stepVarArray, uint8_t layer_index)
 {
-    unsigned long current_millis = 0;
-    unsigned long last_beat_millis = 0;
+
+    struct timerInterval playBeat;
+    initTimer(&playBeat);
 
     while(!update_pot_value())
         {
@@ -217,20 +218,17 @@ void setStepVarIndividual(uint8_t beat_step_index, int* stepVarArray, uint8_t la
             //mapping potentio value to LED
             potToLED(pot_value, beat_step_index);
 
-            current_millis = synth.millis();
-
             //turn off beat
             if(pot_value< 20) stepVar=0;
 
             //set step variable to current selected value
             *(stepVarArray + beat_step_index ) = stepVar;
 
-            //play current beat for preview (ervery 500 ms)
-            if (current_millis - last_beat_millis >= 500 )
-                {
-                    last_beat_millis = synth.millis(); // cant use millis from arduino - iox
-                    soundTrigger(layer_index, stepLayer[layer_index][beat_step_index], offsetLayer[layer_index]);
-                }
+            //play current beat for preview (ervery 500 ms)            
+            if (onInterval(&playBeat, beat_tempo))
+            {
+                soundTrigger(layer_index, stepLayer[layer_index][beat_step_index], offsetLayer[layer_index]);
+            }
 
         }
 }
@@ -268,8 +266,8 @@ uint8_t selectNumber()
 
 void selectWave()
 {
-    unsigned long current_millis = 0;
-    unsigned long last_beat_millis = 0;
+    struct timerInterval playBeat;
+    initTimer(&playBeat);
 
     uint8_t layer_index = selectNumber();
     uint8_t beat_step_index = 0;
@@ -282,24 +280,23 @@ void selectWave()
 
         uint8_t wave_index = pot_value >> POT_SCALE_TO_8;
 
-        //play current beat for preview (ervery 500 ms)
-        current_millis = synth.millis();
-
-        if (current_millis - last_beat_millis >= beat_tempo )
-            {
-                if (wave_index > 5) wave_index = 5;
-                synth.setWave(layer_index, wave_index);
-                soundTrigger(layer_index, stepLayer[layer_index][beat_step_index], offsetLayer[layer_index]);
-                last_beat_millis = synth.millis(); // cant use millis from arduino - iox
-                beat_step_index++;
-                if (beat_step_index > (NUMBER_OF_STEPS -1)) beat_step_index = 0;
-            }
+        if (onInterval(&playBeat, beat_tempo))
+        {
+            if (wave_index > 5) wave_index = 5;
+            synth.setWave(layer_index, wave_index);
+            soundTrigger(layer_index, stepLayer[layer_index][beat_step_index], offsetLayer[layer_index]);
+            beat_step_index++;
+            if (beat_step_index > (NUMBER_OF_STEPS -1)) beat_step_index = 0;
+        }
 
     }
 }
 
 static inline void editStep()
 {
+    struct timerInterval playBeat;
+    initTimer(&playBeat);
+
     uint8_t layer_index = 0;
     uint8_t beat_step_index = 0;
     uint8_t beat_step_index_play = 0;
@@ -307,8 +304,7 @@ static inline void editStep()
     uint8_t next_mode = MENU_SEL_LAYER;
     uint8_t selected_mode = MENU_SEL_LAYER;
 
-    unsigned long current_millis = 0;
-    unsigned long last_beat_millis = 0;
+
 
     while(next_mode != MENU_EXIT_SEL)
     {
@@ -324,14 +320,12 @@ static inline void editStep()
                 selected_mode = MENU_SEL_STEP;
 
                 //play current beat for preview (ervery 500 ms)
-                current_millis = synth.millis();
-                if (current_millis - last_beat_millis >= beat_tempo )
-                    {
-                        soundTrigger(layer_index, stepLayer[layer_index][beat_step_index_play], offsetLayer[layer_index]);
-                        last_beat_millis = synth.millis(); // cant use millis from arduino - iox
-                        beat_step_index_play++;
-                        if (beat_step_index_play > (NUMBER_OF_STEPS -1)) beat_step_index_play = 0;
-                    }
+                if (onInterval(&playBeat, beat_tempo))
+                {
+                    soundTrigger(layer_index, stepLayer[layer_index][beat_step_index_play], offsetLayer[layer_index]);
+                    beat_step_index_play++;
+                    if (beat_step_index_play > (NUMBER_OF_STEPS -1)) beat_step_index_play = 0;
+                }
 
             }else{
                 potToLED(0, 7);
@@ -353,12 +347,10 @@ static inline void editStep()
                 selected_mode = MENU_SEL_NOTES;
 
                 //play current beat for preview (ervery 500 ms)
-                current_millis = synth.millis();
-                if (current_millis - last_beat_millis >= beat_tempo )
-                    {
-                        soundTrigger(layer_index, stepLayer[layer_index][beat_step_index], offsetLayer[layer_index]);
-                        last_beat_millis = synth.millis(); // cant use millis from arduino - iox
-                    }
+                if (onInterval(&playBeat, beat_tempo))
+                {
+                    soundTrigger(layer_index, stepLayer[layer_index][beat_step_index], offsetLayer[layer_index]);
+                }
 
             }else{
                 potToLED(0, 7);
@@ -397,7 +389,13 @@ static inline void selectMode()
 
         while (!update_pot_value())
         {
+
             potToLED2(pot_value);
+
+            if (onInterval(&timer_sequencer_play, beat_tempo))
+            {
+                playSequencer();
+            }
         }
 
         selected_value = (pot_value >> POT_SCALE_TO_4) + 1;
@@ -468,8 +466,25 @@ void setup()
     _delay_us(1000);
 #endif
 
+    initTimer(&timer_sequencer_play);
 }
 
+
+void playSequencer()
+{
+#if ENABLE_LAYER_1 == 1
+        soundTrigger(0, stepLayer[0][beat_step_num], offsetLayer[0]);
+#endif
+#if ENABLE_LAYER_2 == 1
+        soundTrigger(1, stepLayer[1][beat_step_num], offsetLayer[1]);
+#endif
+#if ENABLE_LAYER_3 == 1
+        soundTrigger(2, stepLayer[2][beat_step_num], offsetLayer[2]);
+#endif
+#if ENABLE_LAYER_4 == 1
+        soundTrigger(3, stepLayer[3][beat_step_num], offsetLayer[3]);
+#endif
+}
 
 void loop()
 {
@@ -483,24 +498,12 @@ void loop()
     prev_pressed = pressed;
     beat_tempo = pot_value;
 
-    if (synth.millis()-lastTime >= beat_tempo )
-        {
-
-          stepToLED(beat_step_num);
-
-#if ENABLE_LAYER_1 == 1
-          soundTrigger(0, stepLayer[0][beat_step_num], offsetLayer[0]);
-#endif
-#if ENABLE_LAYER_2 == 1
-          soundTrigger(1, stepLayer[1][beat_step_num], offsetLayer[1]);
-#endif
-#if ENABLE_LAYER_3 == 1
-          soundTrigger(2, stepLayer[2][beat_step_num], offsetLayer[2]);
-#endif
-
-          beat_step_num++;
-          if (beat_step_num>(NUMBER_OF_STEPS-1)) beat_step_num = 0;
-          lastTime = synth.millis(); // cant use millis from arduino - iox
-        }
+    if (onInterval(&timer_sequencer_play, beat_tempo))
+    {
+        stepToLED(beat_step_num);
+        playSequencer();
+        beat_step_num++;
+        if (beat_step_num>(NUMBER_OF_STEPS-1)) beat_step_num = 0;
+    }
 
 }
