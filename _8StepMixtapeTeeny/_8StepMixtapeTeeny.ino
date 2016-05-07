@@ -8,9 +8,9 @@
     * Refactored by manticore to run with TeenySynth sound engine (fork of
       the_synth by DZL and Illuminat modified to support attiny85/84 + other stuff)
     * New Feature added by manticore:
+      - Simple menu to change wave, sequencer, and timing
       - options to add sound intro, enable disable layer, setstep on start, select mode on start
       - changed variable to constant to save space
-      - Simple menu to change wave, sequencer, and timing
 
 */
 
@@ -25,7 +25,7 @@ TeenySynth synth;
 #define GATE_PIN 6
 #define NUMBER_OF_STEPS 8
 #define POT_THRESHOLD 35
-#define INTRO_SONG 0
+#define INTRO_SONG 1
 #define CV_PIN 5
 #define TRUE 1
 #define FALSE 0
