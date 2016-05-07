@@ -62,8 +62,17 @@ int stepLayer[3][NUMBER_OF_STEPS] =
 
 uint8_t offsetLayer[3] = {50,30,0};
 
-//for intro song
+struct timerInterval
+{
+    unsigned long current_millis;
+    unsigned long last_beat_millis;
+};
 
+struct timerInterval timer_sequencer_play;
+
+
+
+//for intro song
 #if INTRO_SONG == 1
 int melody[] =
 {
@@ -80,6 +89,27 @@ unsigned int pot_value = 0; //variable to store potentio value
 uint8_t prev_pressed = 0;
 unsigned int beat_tempo = 500;
 int raw_pot_value = 0;
+
+
+
+
+void initTimer(struct timerInterval * timer)
+{
+    timer->current_millis = 0;
+    timer->last_beat_millis = 0;
+}
+
+uint8_t onInterval(struct timerInterval * timer, int interval)
+{
+    timer->current_millis = synth.millis();
+    //play current beat for preview (ervery 500 ms)
+    if (timer->current_millis - timer->last_beat_millis >= interval )
+        {
+            timer->last_beat_millis = synth.millis(); // cant use millis from arduino - iox
+            return 1;
+        }
+    return 0;
+}
 
 static inline void setupSound()
 {
