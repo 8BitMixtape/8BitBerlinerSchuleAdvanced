@@ -45,6 +45,12 @@ TeenySynth synth;
 #define MODE_CHANGE_TIMER 3
 #define MODE_CHANGE_WAVE 4
 
+#define MENU_SEL_LAYER 1
+#define MENU_SEL_STEP 2
+#define MENU_SEL_NOTES 3
+#define MENU_EXIT_SEL 4
+#define MENU_EXIT_THRESHOLD 980
+
 const uint8_t ledPinMapping[8] = {9, 10, 8, 7, 0, 1, 2, 4};
 
 int stepLayer[3][NUMBER_OF_STEPS] =
@@ -255,6 +261,94 @@ void selectWave()
                 beat_step_index++;
                 if (beat_step_index > (NUMBER_OF_STEPS -1)) beat_step_index = 0;
             }
+
+    }
+}
+
+static inline void editStep()
+{
+    uint8_t layer_index = 0;
+    uint8_t beat_step_index = 0;
+    uint8_t beat_step_index_play = 0;
+
+    uint8_t next_mode = MENU_SEL_LAYER;
+    uint8_t selected_mode = MENU_SEL_LAYER;
+
+    unsigned long current_millis = 0;
+    unsigned long last_beat_millis = 0;
+
+    while(next_mode != MENU_EXIT_SEL)
+    {
+        _delay_us(1000);
+        //1.select layer
+        while(!update_pot_value() && next_mode == MENU_SEL_LAYER )
+        {
+            //cancel
+            if (raw_pot_value < MENU_EXIT_THRESHOLD)
+            {
+                potToLED(pot_value, beat_step_index_play);
+                layer_index = pot_value >> POT_SCALE_TO_8;
+                selected_mode = MENU_SEL_STEP;
+
+                //play current beat for preview (ervery 500 ms)
+                current_millis = synth.millis();
+                if (current_millis - last_beat_millis >= beat_tempo )
+                    {
+                        soundTrigger(layer_index, stepLayer[layer_index][beat_step_index_play], offsetLayer[layer_index]);
+                        last_beat_millis = synth.millis(); // cant use millis from arduino - iox
+                        beat_step_index_play++;
+                        if (beat_step_index_play > (NUMBER_OF_STEPS -1)) beat_step_index_play = 0;
+                    }
+
+            }else{
+                potToLED(0, 7);
+                selected_mode = MENU_EXIT_SEL;
+            }
+        }
+
+        next_mode = selected_mode;
+
+        _delay_us(1000);
+        //2.select beat step index
+        while(!update_pot_value() && next_mode == MENU_SEL_STEP)
+        {
+            //cancel
+            if (raw_pot_value < MENU_EXIT_THRESHOLD)
+            {
+                potToLED(pot_value, pot_value >> POT_SCALE_TO_8);
+                beat_step_index = pot_value >> POT_SCALE_TO_8;
+                selected_mode = MENU_SEL_NOTES;
+
+                //play current beat for preview (ervery 500 ms)
+                current_millis = synth.millis();
+                if (current_millis - last_beat_millis >= beat_tempo )
+                    {
+                        soundTrigger(layer_index, stepLayer[layer_index][beat_step_index], offsetLayer[layer_index]);
+                        last_beat_millis = synth.millis(); // cant use millis from arduino - iox
+                    }
+
+            }else{
+                potToLED(0, 7);
+                selected_mode = MENU_SEL_LAYER;
+            }
+
+
+        }
+
+        next_mode = selected_mode;
+
+
+        _delay_us(1000);
+        //3.set note
+        if (next_mode == MENU_SEL_NOTES)
+        {
+            setStepVarIndividual(beat_step_index, stepLayer[layer_index], layer_index);
+            selected_mode = MENU_SEL_STEP;
+        }
+
+
+        next_mode = selected_mode;
+
 
     }
 }
