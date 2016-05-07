@@ -42,7 +42,7 @@ TeenySynth synth;
 
 #define MODE_EXIT_MENU 1
 #define MODE_SELECT_LAYER 2
-#define MODE_CHANGE_TIMER 3
+#define MODE_EDIT_LAYER 3
 #define MODE_CHANGE_WAVE 4
 
 #define MENU_SEL_LAYER 1
@@ -371,13 +371,12 @@ static inline void selectMode()
 
         if (selected_value == MODE_SELECT_LAYER)
         {
-            uint8_t idx = selectNumber();
-            setStepVariable(idx, stepLayer[idx]);
+            editStep();
         }
-        else if(selected_value == MODE_CHANGE_TIMER)
+        else if(selected_value == MODE_EDIT_LAYER)
         {
             uint8_t idx = selectNumber();
-            synth.bendTimer(raw_pot_value);
+            setStepVariable(idx, stepLayer[idx]);
         }else if (selected_value == MODE_CHANGE_WAVE)
         {
             selectWave();
