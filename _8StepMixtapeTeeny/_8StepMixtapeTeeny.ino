@@ -33,6 +33,8 @@ TeenySynth synth;
 #define ENABLE_LAYER_1 1
 #define ENABLE_LAYER_2 1
 #define ENABLE_LAYER_3 1
+#define ENABLE_LAYER_4 1
+
 #define ENABLE_SETSTEP_ONSTART 0
 #define ENABLE_SELECTMODE_ONSTART 1
 
@@ -53,8 +55,9 @@ TeenySynth synth;
 
 const uint8_t ledPinMapping[8] = {9, 10, 8, 7, 0, 1, 2, 4};
 
-int stepLayer[3][NUMBER_OF_STEPS] =
+int stepLayer[4][NUMBER_OF_STEPS] =
 {
+    {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0}
@@ -453,6 +456,9 @@ void setup()
 #endif
 #if ENABLE_LAYER_3 == 1
     setStepVariable(2, stepLayer[2]);
+#endif
+#if ENABLE_LAYER_4 == 1
+    setStepVariable(3, stepLayer[3]);
 #endif
 
 #endif
