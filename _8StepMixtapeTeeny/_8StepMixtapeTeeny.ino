@@ -250,20 +250,14 @@ void setStepVarIndividual(uint8_t beat_step_index, int* stepVarArray, uint8_t la
 
 static inline void animateLed()
 {
-    for (uint8_t i = 0; i < NUMBER_OF_STEPS; i++)
-        {
-            pinMode(ledPinMapping[i], OUTPUT);
-        };
     for (uint8_t i = 0; i <= NUMBER_OF_STEPS; i++)
         {
-            digitalWrite(ledPinMapping[i], HIGH);
-            _delay_ms(30);
+            setLedPatternON(1<<i);
+            _delay_ms(50);
         };
-    for (uint8_t i = 0; i <= NUMBER_OF_STEPS; i++)
-        {
-            digitalWrite(ledPinMapping[i], LOW);
-            _delay_ms(30);
-        };
+
+    setLedPatternOFF(0b11111111);
+
 }
 
 
