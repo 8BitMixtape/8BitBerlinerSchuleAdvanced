@@ -185,21 +185,6 @@ uint8_t update_pot_value() //return 0 if pressed
     }
 }
 
-
-static inline void stepToLED(uint8_t beat_step_num)
-{
-    for (int i = 0; i <= beat_step_num; i++)
-        {
-            digitalWrite(ledPinMapping[i], HIGH);
-        };
-
-    for (int i = beat_step_num; i < NUMBER_OF_STEPS; i++)
-        {
-            digitalWrite(ledPinMapping[i], LOW);
-        }
-}
-
-
 void potToLED(int _pot_value, uint8_t beat_step_index)
 {
     uint8_t scaled = (_pot_value) >> POT_SCALE_TO_8;
