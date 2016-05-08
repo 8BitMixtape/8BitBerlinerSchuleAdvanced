@@ -56,6 +56,7 @@ TeenySynth synth;
 #define SETBIT(ADDRESS,BIT,NUM) (ADDRESS |= (NUM<<BIT))
 #define CLEARBIT(ADDRESS,BIT,NUM) (ADDRESS &= ~( NUM<<BIT))
 #define LEDPATTERN(PATT,MASK,ORD,BIT) (((PATT & MASK) >> ORD) << BIT)
+#define MASK2(b1,b2) ( (1<<b1) | (1<<b2) )
 
 const uint8_t ledPinMapping[8] = {9, 10, 8, 7, 0, 1, 2, 4};
 
