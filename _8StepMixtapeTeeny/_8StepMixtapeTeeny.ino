@@ -206,7 +206,7 @@ void potToLED2(int _pot_value)
     setLedPatternOFF(0b11111111);
 }
 
-void setStepVariable(uint8_t voice, int * stepVarArray)
+static inline void setStepVariable(uint8_t voice, int * stepVarArray)
 {
     for(uint8_t beat_step_index=0; beat_step_index < NUMBER_OF_STEPS; beat_step_index++)
         {
@@ -272,7 +272,7 @@ uint8_t selectNumber()
 }
 
 
-void selectWave()
+static inline void selectWave()
 {
     struct timerInterval playBeat;
     initTimer(&playBeat);
