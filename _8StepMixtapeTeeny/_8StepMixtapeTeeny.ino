@@ -185,20 +185,16 @@ uint8_t update_pot_value() //return 0 if pressed
 void potToLED(int _pot_value, uint8_t beat_step_index)
 {
     uint8_t scaled = (_pot_value) >> POT_SCALE_TO_8;
+    uint8_t to_binary = (((1<<(scaled)) *2) - 1);
 
     for (int i = 0; i <= scaled; i++)  // bit shift right >> 7 for scaling pot value from 0..1023 to 0..7
         {
-            digitalWrite(ledPinMapping[i], HIGH);
-            digitalWrite(ledPinMapping[beat_step_index], LOW);  //led blinking on current step
+            setLedPatternON(1<<i);
+            setLedPatternOFF(1<<beat_step_index);
             _delay_us(1);                                       //led blinking on current step
-            digitalWrite(ledPinMapping[beat_step_index], HIGH); //led blinking on current step
+            setLedPatternON(1<<beat_step_index);
         }
-
-
-    for (int i = ( scaled ); i < NUMBER_OF_STEPS; i++)
-        {
-            digitalWrite(ledPinMapping[i], LOW);
-        }
+            setLedPatternOFF(~to_binary);
 }
 
 
