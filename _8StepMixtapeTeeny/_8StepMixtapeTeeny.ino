@@ -201,17 +201,9 @@ void potToLED(int _pot_value, uint8_t beat_step_index)
 void potToLED2(int _pot_value)
 {
     uint8_t index = (_pot_value) >> POT_SCALE_TO_4; //0..1023 0..3
-
-    for (int i = (3-index); i <= (4+index); i++)  // bit shift right >> 7 for scaling pot value from 0..1023 to 0..7
-        {
-            digitalWrite(ledPinMapping[i], HIGH);
-        }
-
-    for (int i = 0; i < NUMBER_OF_STEPS; i++)
-        {
-            digitalWrite(ledPinMapping[i], LOW);
-        }
-
+    uint8_t to_binary =  ( (1<< index) *2) -1;
+    setLedPatternON(to_binary << 4 | (to_binary << 3 - index) );
+    setLedPatternOFF(0b11111111);
 }
 
 void setStepVariable(uint8_t voice, int * stepVarArray)
