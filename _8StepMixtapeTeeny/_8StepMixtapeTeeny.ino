@@ -11,7 +11,7 @@
       - Simple menu to change wave, sequencer, and timing
       - options to add sound intro, enable disable layer, setstep on start, select mode on start
       - changed variable to constant to save space
-
+      - refactor led using PORTA and PORTB directly
 */
 
 #include <TeenySynth.h>
@@ -77,8 +77,6 @@ struct timerInterval
 
 struct timerInterval timer_sequencer_play;
 
-
-
 //for intro song
 #if INTRO_SONG == 1
 int melody[] =
@@ -96,8 +94,6 @@ unsigned int pot_value = 0; //variable to store potentio value
 uint8_t prev_pressed = 0;
 unsigned int beat_tempo = 500;
 int raw_pot_value = 0;
-
-
 
 
 void initTimer(struct timerInterval * timer)
