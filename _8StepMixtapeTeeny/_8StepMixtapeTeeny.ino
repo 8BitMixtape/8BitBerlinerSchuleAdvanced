@@ -161,28 +161,11 @@ void setLedPatternON(uint8_t ledPattern)
 
 void setLedON(uint8_t led)
 {
-    uint8_t to_binary = (((1<<(led-1)) *2) - 1);
-
-    SETBIT(PORTB,PB1, (to_binary & 0b00000001) >> 0 );
-    SETBIT(PORTB,PB0, (to_binary & 0b00000010) >> 1 );
-    SETBIT(PORTB,PB2, (to_binary & 0b00000100) >> 2 );
-    SETBIT(PORTA,PA7, (to_binary & 0b00001000) >> 3 );
-    SETBIT(PORTA,PA0, (to_binary & 0b00010000) >> 4 );
-    SETBIT(PORTA,PA1, (to_binary & 0b00100000) >> 5 );
-    SETBIT(PORTA,PA2, (to_binary & 0b01000000) >> 6 );
-    SETBIT(PORTA,PA4, (to_binary & 0b10000000) >> 7 );
-
-    CLEARBIT(PORTB,PB1, (to_binary & 0b00000001) >> 0 );
-    CLEARBIT(PORTB,PB0, (to_binary & 0b00000010) >> 1 );
-    CLEARBIT(PORTB,PB2, (to_binary & 0b00000100) >> 2 );
-    CLEARBIT(PORTA,PA7, (to_binary & 0b00001000) >> 3 );
-    CLEARBIT(PORTA,PA0, (to_binary & 0b00010000) >> 4 );
-    CLEARBIT(PORTA,PA1, (to_binary & 0b00100000) >> 5 );
-    CLEARBIT(PORTA,PA2, (to_binary & 0b01000000) >> 6 );
-    CLEARBIT(PORTA,PA4, (to_binary & 0b10000000) >> 7 );
-
-    PORTA |= (0b00100000);
+    uint8_t to_binary = (((1<<(led)) *2) - 1);
+    setLedPatternON(to_binary);
+    setLedPatternOFF(to_binary);
 }
+
 
 static inline void soundTrigger(uint8_t voice,int value, uint8_t offsetFreq)
 {
