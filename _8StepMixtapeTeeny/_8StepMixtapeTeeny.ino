@@ -444,21 +444,33 @@ static inline void playIntroSong()
 }
 #endif
 
-void setup()
+static inline void setPinOut()
 {
     pinMode(POT_PIN, INPUT);
     digitalWrite(POT_PIN, HIGH);
     pinMode(GATE_PIN, OUTPUT);
     digitalWrite(GATE_PIN, LOW);
     analogWrite(CV_PIN, 255);
+    pinMode(ledPinMapping[0], OUTPUT);
+    pinMode(ledPinMapping[1], OUTPUT);
+    pinMode(ledPinMapping[2], OUTPUT);
+    pinMode(ledPinMapping[3], OUTPUT);
+    pinMode(ledPinMapping[4], OUTPUT);
+    pinMode(ledPinMapping[5], OUTPUT);
+    pinMode(ledPinMapping[6], OUTPUT);
+    pinMode(ledPinMapping[7], OUTPUT);
+}
 
+void setup()
+{
+
+    setPinOut();
     animateLed();
     setupSound();
 
 #if INTRO_SONG == 1
     playIntroSong();
 #endif
-
 
 #if ENABLE_SETSTEP_ONSTART == 1
 
