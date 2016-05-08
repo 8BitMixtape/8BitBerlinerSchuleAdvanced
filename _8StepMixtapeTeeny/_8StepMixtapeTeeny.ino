@@ -53,8 +53,9 @@ TeenySynth synth;
 #define MENU_EXIT_SEL 4
 #define MENU_EXIT_THRESHOLD 980
 
-#define SETBIT(ADDRESS,BIT, NUM) (ADDRESS |= (NUM<<BIT))
-#define CLEARBIT(ADDRESS,BIT, NUM) (ADDRESS &= ~( NUM<<BIT))
+#define SETBIT(ADDRESS,BIT,NUM) (ADDRESS |= (NUM<<BIT))
+#define CLEARBIT(ADDRESS,BIT,NUM) (ADDRESS &= ~( NUM<<BIT))
+#define LEDPATTERN(PATT,MASK,ORD,BIT) (((PATT & MASK) >> ORD) << BIT)
 
 const uint8_t ledPinMapping[8] = {9, 10, 8, 7, 0, 1, 2, 4};
 
@@ -125,6 +126,38 @@ static inline void setupSound()
     synth.setupVoice(2,NOISE,60,ENVELOPE1,40,64);
     synth.setupVoice(3,NOISE,67,ENVELOPE0,60,64);
 }
+
+void setLedPatternOFF(uint8_t ledPattern)
+{
+    PORTB &=
+            ~((LEDPATTERN(ledPattern, 0b00000001, 0, PB1))|
+              (LEDPATTERN(ledPattern, 0b00000010, 1, PB0))|
+              (LEDPATTERN(ledPattern, 0b00000100, 2, PB2)));
+    PORTA &=
+            ~((LEDPATTERN(ledPattern, 0b00001000, 3, PA7))|
+              (LEDPATTERN(ledPattern, 0b00010000, 4, PA0))|
+              (LEDPATTERN(ledPattern, 0b00100000, 5, PA1))|
+              (LEDPATTERN(ledPattern, 0b01000000, 6, PA2))|
+              (LEDPATTERN(ledPattern, 0b10000000, 7, PA4)));
+}
+
+void setLedPatternON(uint8_t ledPattern)
+{
+    //turn off pwm
+    TCCR0A = (TCCR0A & ~MASK2(COM0A1,COM0A0)) | (0 << COM0A0);
+
+    PORTB |=
+            (LEDPATTERN(ledPattern, 0b00000001, 0, PB1))|
+            (LEDPATTERN(ledPattern, 0b00000010, 1, PB0))|
+            (LEDPATTERN(ledPattern, 0b00000100, 2, PB2));
+    PORTA |=
+            (LEDPATTERN(ledPattern, 0b00001000, 3, PA7))|
+            (LEDPATTERN(ledPattern, 0b00010000, 4, PA0))|
+            (LEDPATTERN(ledPattern, 0b00100000, 5, PA1))|
+            (LEDPATTERN(ledPattern, 0b01000000, 6, PA2))|
+            (LEDPATTERN(ledPattern, 0b10000000, 7, PA4));
+}
+
 
 void setLedON(uint8_t led)
 {
